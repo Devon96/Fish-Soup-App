@@ -7,6 +7,10 @@
   const TIMED_MINUTES = 15;
   const COOKING_STORAGE_KEY = 'bajai-halaszle-cooking-v1';
   const UI_STORAGE_KEY = 'bajai-halaszle-ui-v1';
+  const CONSENT_STORAGE_KEY = 'bajai-halaszle-cookie-consent-v1';
+  const CONSENT_VERSION = 1;
+  const GOOGLE_ANALYTICS_ID = 'G-JEFFP3CYK5';
+  let analyticsLoaded = false;
 
   const translations = {
     hu: {
@@ -26,6 +30,11 @@
       processIntro: 'Haladj sorban. A forrást külön jelezheted, az időzítők pedig számolják a hátralévő időt.',
       stepsLabel: 'lépés', progressReady: 'Készen állsz a kezdésre?', notificationFootnote: 'Az értesítésekhez engedélyezd a böngészőértesítéseket, és hagyd nyitva ezt az oldalt. A pontos riasztás függ a böngészőtől és az eszköz beállításaitól.',
       footerText: 'Hagyományos arányok alapján · A sót kóstolás után állítsd be.', footerMade: 'főzz jó étvággyal',
+      cookieSettingsLink: 'Süti-beállítások',
+      cookieKicker: 'ADATVÉDELEM', cookieTitle: 'Hozzájárulsz a látogatottsági statisztikák méréséhez?',
+      cookieDescription: 'Az oldal a működéshez szükséges beállításokat a böngésződben tárolja. A Google Analytics 4 látogatottsági mérése csak akkor indul el, ha elfogadod. A választásodat később a Süti-beállítások gombbal módosíthatod.',
+      cookieReject: 'Elutasítom', cookieAccept: 'Elfogadom',
+      cookieRejected: 'Az analitikát elutasítottad; a mérőkód nem fut tovább.', cookieAccepted: 'Az analitikát engedélyezted.',
       fish: 'Hal, vegyesen', water: 'Víz összesen', onions: 'Nagy vöröshagyma', cubes: 'Halászlé-kocka', paprika: 'Édes őrölt pirospaprika', pasta: 'Halászlé-/gyufatészta', salt: 'Só',
       toTaste: 'ízlés szerint', servingsEstimate: 'Kb. {n} adag', fishEstimate: 'Becsült adag: {n} főre',
       stepStatusCurrent: 'MOST EZ JÖN', stepStatusDone: 'KÉSZ', stepStatusNext: 'KÖVETKEZIK', stepStatusWaiting: 'VÁRAKOZÁS',
@@ -98,6 +107,11 @@
       processIntro: 'Follow the steps in order. Confirm when the soup starts boiling; the timers will track the remaining time.',
       stepsLabel: 'step', progressReady: 'Ready to start?', notificationFootnote: 'Allow browser notifications and keep this page open to receive alerts. Exact delivery depends on your browser and device settings.',
       footerText: 'Scaled from the traditional ratios · Adjust salt after tasting.', footerMade: 'cook and enjoy',
+      cookieSettingsLink: 'Cookie settings',
+      cookieKicker: 'PRIVACY', cookieTitle: 'Allow visit statistics?',
+      cookieDescription: 'This site stores the settings needed for its core features in your browser. Google Analytics 4 visit measurement starts only if you accept. You can change your choice later using the Cookie settings button.',
+      cookieReject: 'Reject', cookieAccept: 'Accept',
+      cookieRejected: 'Analytics was rejected; measurement will not continue.', cookieAccepted: 'Analytics was allowed.',
       fish: 'Mixed fish', water: 'Water, total', onions: 'Large onion', cubes: 'Fish-soup stock cube', paprika: 'Sweet ground paprika', pasta: 'Soup / matchstick pasta', salt: 'Salt',
       toTaste: 'to taste', servingsEstimate: 'Approx. {n} servings', fishEstimate: 'Estimated yield: {n} people',
       stepStatusCurrent: 'UP NEXT', stepStatusDone: 'DONE', stepStatusNext: 'UPCOMING', stepStatusWaiting: 'WAITING',
@@ -198,6 +212,8 @@
       const ui = JSON.parse(safeGet(UI_STORAGE_KEY) || 'null');
       if (ui && (ui.lang === 'hu' || ui.lang === 'en')) state.lang = ui.lang;
       if (ui && (ui.theme === 'light' || ui.theme === 'dark')) state.theme = ui.theme;
+      const requestedLanguage = new URLSearchParams(window.location.search).get('lang');
+      if (requestedLanguage === 'hu' || requestedLanguage === 'en') state.lang = requestedLanguage;
       const saved = JSON.parse(safeGet(COOKING_STORAGE_KEY) || 'null');
       if (saved && typeof saved === 'object') {
         if (Number.isFinite(saved.fishKg) && saved.fishKg > 0) state.fishKg = saved.fishKg;
@@ -659,10 +675,84 @@
     saveCookingState();
   }
 
+  function readCookieConsent() {
+    try {
+      const saved = JSON.parse(safeGet(CONSENT_STORAGE_KEY) || 'null');
+      if (saved && saved.version === CONSENT_VERSION && typeof saved.analytics === 'boolean') return saved;
+    } catch { /* Ignore invalid or unavailable storage. */ }
+    return null;
+  }
+
+  function deleteAnalyticsCookies() {
+    const measurementCookie = `_ga_${GOOGLE_ANALYTICS_ID.slice(2).replace(/-/g, '_')}`;
+    const names = new Set(['_ga', measurementCookie, '_gid', '_gat']);
+    const domains = new Set(['', location.hostname]);
+    const hostnameParts = location.hostname.split('.');
+    if (hostnameParts.length > 1 && !/^\d+$/.test(hostnameParts[hostnameParts.length - 1])) {
+      domains.add(`.${hostnameParts.slice(-2).join('.')}`);
+    }
+    for (const name of names) {
+      for (const domain of domains) {
+        const domainAttribute = domain ? `; domain=${domain}` : '';
+        document.cookie = `${name}=; Max-Age=0; path=/; SameSite=Lax${domainAttribute}`;
+      }
+    }
+  }
+
+  function loadGoogleAnalytics() {
+    if (analyticsLoaded) return;
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+    window.gtag('js', new Date());
+    window.gtag('config', GOOGLE_ANALYTICS_ID, { anonymize_ip: true });
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ANALYTICS_ID}`;
+    script.dataset.googleAnalytics = 'true';
+    document.head.appendChild(script);
+    analyticsLoaded = true;
+  }
+
+  function applyCookieConsent(analyticsAllowed) {
+    window[`ga-disable-${GOOGLE_ANALYTICS_ID}`] = !analyticsAllowed;
+    if (analyticsAllowed) {
+      if (analyticsLoaded) window.gtag('event', 'page_view');
+      else loadGoogleAnalytics();
+    } else {
+      deleteAnalyticsCookies();
+    }
+  }
+
+  function showCookieConsent() {
+    const dialog = $('#cookieConsent');
+    if (!dialog.open) dialog.showModal();
+  }
+
+  function saveCookieConsent(analytics) {
+    const consent = { version: CONSENT_VERSION, analytics, savedAt: new Date().toISOString() };
+    safeSet(CONSENT_STORAGE_KEY, JSON.stringify(consent));
+    applyCookieConsent(analytics);
+    $('#cookieConsent').close();
+    showToast(t(analytics ? 'cookieAccepted' : 'cookieRejected'));
+  }
+
+  function initCookieConsent() {
+    const consent = readCookieConsent();
+    window[`ga-disable-${GOOGLE_ANALYTICS_ID}`] = !consent?.analytics;
+    if (consent) applyCookieConsent(consent.analytics);
+    if (!consent || new URLSearchParams(window.location.search).get('cookies') === '1') showCookieConsent();
+
+    $('#cookieAcceptButton').addEventListener('click', () => saveCookieConsent(true));
+    $('#cookieRejectButton').addEventListener('click', () => saveCookieConsent(false));
+    $('#cookieConsent').addEventListener('cancel', event => event.preventDefault());
+    $('#cookieSettingsLink').addEventListener('click', showCookieConsent);
+  }
+
   function init() {
     loadSavedState();
     applyTheme();
     updateModeUi();
+    initCookieConsent();
     $('#themeButton').addEventListener('click', () => {
       state.theme = state.theme === 'light' ? 'dark' : 'light';
       applyTheme();

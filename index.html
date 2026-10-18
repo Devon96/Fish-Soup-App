@@ -115,8 +115,27 @@
       </section>
     </section>
 
-    <footer class="page-footer"><span data-i18n="footerText">Hagyományos arányok alapján · A sót kóstolás után állítsd be.</span><span>BAJA, HUNGARY <span class="footer-dot">•</span> <span data-i18n="footerMade">főzz jó étvággyal</span></span></footer>
+    <footer class="page-footer">
+      <span class="footer-notes">
+        <span data-i18n="footerText">Hagyományos arányok alapján · A sót kóstolás után állítsd be.</span>
+        <span class="footer-privacy-links">
+          <button type="button" id="cookieSettingsLink" class="text-button" data-i18n="cookieSettingsLink">Süti-beállítások</button>
+        </span>
+      </span>
+      <span>BAJA, HUNGARY <span class="footer-dot">•</span> <span data-i18n="footerMade">főzz jó étvággyal</span></span>
+    </footer>
   </main>
+  <dialog id="cookieConsent" class="cookie-consent" aria-labelledby="cookieConsentTitle" aria-describedby="cookieConsentDescription">
+    <div class="cookie-consent-card">
+      <span class="cookie-consent-kicker" data-i18n="cookieKicker">ADATVÉDELEM</span>
+      <h2 id="cookieConsentTitle" data-i18n="cookieTitle">Hozzájárulsz a látogatottsági statisztikák méréséhez?</h2>
+      <p id="cookieConsentDescription" data-i18n="cookieDescription">Az oldal a működéshez szükséges beállításokat a böngésződben tárolja. A Google Analytics 4 látogatottsági mérése csak akkor indul el, ha elfogadod. A választásodat később a Süti-beállítások gombbal módosíthatod.</p>
+      <div class="cookie-consent-actions">
+        <button type="button" id="cookieRejectButton" class="cookie-button cookie-button-secondary" autofocus data-i18n="cookieReject">Elutasítom</button>
+        <button type="button" id="cookieAcceptButton" class="cookie-button cookie-button-primary" data-i18n="cookieAccept">Elfogadom</button>
+      </div>
+    </div>
+  </dialog>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 </body>
 </html>

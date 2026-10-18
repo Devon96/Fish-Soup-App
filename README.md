@@ -30,6 +30,12 @@ python -m http.server 8000
 
 Then open <http://localhost:8000> and select the **Notifications** control to request permission. Keep the page open while cooking. This project does not provide server-side push notifications after the page or browser is closed.
 
+## Google Analytics and cookie consent
+
+Google Analytics 4 uses measurement ID `G-JEFFP3CYK5`. Its script is not requested until the visitor explicitly accepts analytics in the consent dialog. Rejecting analytics leaves the recipe and cooking guide fully available. Visitors can reopen **Cookie settings / Süti-beállítások** in the footer to change or withdraw their choice; the current choice is stored in browser localStorage.
+
+Before publishing, make sure the website provides any privacy information required for your use of Analytics and verify the actual Analytics property settings, including data retention and any data-sharing or transfer arrangements. This implementation supports consent controls but does not by itself guarantee legal compliance.
+
 ## Ingredient calculation assumptions
 
 The calculator follows the ratios from the supplied recipe and uses these additional estimates where the original recipe did not specify quantities:
