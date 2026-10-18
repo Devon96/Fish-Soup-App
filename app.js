@@ -30,13 +30,11 @@
       processIntro: 'Haladj sorban. A forrást külön jelezheted, az időzítők pedig számolják a hátralévő időt.',
       stepsLabel: 'lépés', progressReady: 'Készen állsz a kezdésre?', notificationFootnote: 'Az értesítésekhez engedélyezd a böngészőértesítéseket, és hagyd nyitva ezt az oldalt. A pontos riasztás függ a böngészőtől és az eszköz beállításaitól.',
       footerText: 'Hagyományos arányok alapján · A sót kóstolás után állítsd be.', footerMade: 'főzz jó étvággyal',
-      privacyPolicyLink: 'Adatvédelmi és sütitájékoztató', cookieSettingsLink: 'Süti beállítások',
-      cookieKicker: 'ADATVÉDELEM', cookieTitle: 'Te döntesz a statisztikai sütikről',
-      cookieDescription: 'A Google Analytics 4 segítségével a látogatottságot mérjük, hogy fejleszthessük az oldalt. Az analitika csak akkor indul el, ha engedélyezed. A választásodat később bármikor módosíthatod.',
-      cookieReject: 'Elutasítom', cookieCustomize: 'Beállítások', cookieAccept: 'Analitika engedélyezése',
-      cookieSettingsTitle: 'Süti-beállítások', cookieNecessaryDescription: 'A szükséges helyi tárolás az oldal alapvető működéséhez mindig aktív.', cookieAlwaysOn: 'Mindig aktív',
-      cookieAnalyticsTitle: 'Statisztikai analitika', cookieAnalyticsDescription: 'Google Analytics 4: oldalmegtekintések és használati statisztikák mérése.',
-      cookieCancel: 'Mégse', cookieSave: 'Beállítások mentése', cookieSaved: 'A süti-beállításaid mentve.', cookieRejected: 'Az analitika nem töltődik be.', cookieAccepted: 'Az analitika engedélyezve van.',
+      cookieSettingsLink: 'Süti-hozzájárulás módosítása',
+      cookieKicker: 'ADATVÉDELEM', cookieTitle: 'Engedélyezed a látogatottsági statisztikák mérését?',
+      cookieDescription: 'A Google Analytics 4 segítségével a látogatottságot mérjük. Az analitika csak akkor töltődik be, ha elfogadod. A választásodat később a láblécben módosíthatod.',
+      cookieReject: 'Elutasítom', cookieAccept: 'Elfogadom',
+      cookieRejected: 'Az analitika nem töltődik be.', cookieAccepted: 'Az analitika engedélyezve van.',
       fish: 'Hal, vegyesen', water: 'Víz összesen', onions: 'Nagy vöröshagyma', cubes: 'Halászlé-kocka', paprika: 'Édes őrölt pirospaprika', pasta: 'Halászlé-/gyufatészta', salt: 'Só',
       toTaste: 'ízlés szerint', servingsEstimate: 'Kb. {n} adag', fishEstimate: 'Becsült adag: {n} főre',
       stepStatusCurrent: 'MOST EZ JÖN', stepStatusDone: 'KÉSZ', stepStatusNext: 'KÖVETKEZIK', stepStatusWaiting: 'VÁRAKOZÁS',
@@ -109,13 +107,11 @@
       processIntro: 'Follow the steps in order. Confirm when the soup starts boiling; the timers will track the remaining time.',
       stepsLabel: 'step', progressReady: 'Ready to start?', notificationFootnote: 'Allow browser notifications and keep this page open to receive alerts. Exact delivery depends on your browser and device settings.',
       footerText: 'Scaled from the traditional ratios · Adjust salt after tasting.', footerMade: 'cook and enjoy',
-      privacyPolicyLink: 'Privacy & cookie notice', cookieSettingsLink: 'Cookie settings',
-      cookieKicker: 'PRIVACY', cookieTitle: 'You choose whether to allow analytics',
-      cookieDescription: 'We use Google Analytics 4 to measure site visits and improve this page. Analytics will only start if you allow it. You can change your choice at any time.',
-      cookieReject: 'Reject optional', cookieCustomize: 'Settings', cookieAccept: 'Allow analytics',
-      cookieSettingsTitle: 'Cookie settings', cookieNecessaryDescription: 'Essential local storage needed for the page to work remains active.', cookieAlwaysOn: 'Always active',
-      cookieAnalyticsTitle: 'Analytics', cookieAnalyticsDescription: 'Google Analytics 4 measures page views and usage statistics.',
-      cookieCancel: 'Cancel', cookieSave: 'Save preferences', cookieSaved: 'Your cookie preferences have been saved.', cookieRejected: 'Analytics will not be loaded.', cookieAccepted: 'Analytics is enabled.',
+      cookieSettingsLink: 'Change cookie choice',
+      cookieKicker: 'PRIVACY', cookieTitle: 'Allow visitor statistics?',
+      cookieDescription: 'We use Google Analytics 4 to measure site visits. Analytics loads only if you accept. You can change your choice later using the link in the footer.',
+      cookieReject: 'Reject', cookieAccept: 'Accept',
+      cookieRejected: 'Analytics will not be loaded.', cookieAccepted: 'Analytics is enabled.',
       fish: 'Mixed fish', water: 'Water, total', onions: 'Large onion', cubes: 'Fish-soup stock cube', paprika: 'Sweet ground paprika', pasta: 'Soup / matchstick pasta', salt: 'Salt',
       toTaste: 'to taste', servingsEstimate: 'Approx. {n} servings', fishEstimate: 'Estimated yield: {n} people',
       stepStatusCurrent: 'UP NEXT', stepStatusDone: 'DONE', stepStatusNext: 'UPCOMING', stepStatusWaiting: 'WAITING',
@@ -738,21 +734,12 @@
     }
   }
 
-  function showCookieBanner(openSettings = false) {
-    const banner = $('#cookieConsent');
-    const settings = $('#cookieSettingsPanel');
-    const customize = $('#cookieCustomizeButton');
-    const current = readCookieConsent();
-    $('#cookieAnalyticsToggle').checked = Boolean(current?.analytics);
-    banner.hidden = false;
-    settings.hidden = !openSettings;
-    customize.setAttribute('aria-expanded', String(openSettings));
+  function showCookieBanner() {
+    $('#cookieConsent').hidden = false;
   }
 
   function hideCookieBanner() {
     $('#cookieConsent').hidden = true;
-    $('#cookieSettingsPanel').hidden = true;
-    $('#cookieCustomizeButton').setAttribute('aria-expanded', 'false');
   }
 
   function initCookieConsent() {
@@ -765,21 +752,9 @@
     }
     $('#cookieAcceptButton').addEventListener('click', () => saveCookieConsent(true));
     $('#cookieRejectButton').addEventListener('click', () => saveCookieConsent(false));
-    $('#cookieCustomizeButton').addEventListener('click', () => {
-      const panel = $('#cookieSettingsPanel');
-      const open = panel.hidden;
-      panel.hidden = !open;
-      $('#cookieCustomizeButton').setAttribute('aria-expanded', String(open));
-      $('#cookieAnalyticsToggle').checked = Boolean(readCookieConsent()?.analytics);
-    });
-    $('#cookieSaveButton').addEventListener('click', () => saveCookieConsent($('#cookieAnalyticsToggle').checked));
-    $('#cookieCancelButton').addEventListener('click', () => {
-      $('#cookieSettingsPanel').hidden = true;
-      $('#cookieCustomizeButton').setAttribute('aria-expanded', 'false');
-      if (readCookieConsent()) hideCookieBanner();
-    });
-    $('#cookieSettingsLink').addEventListener('click', () => showCookieBanner(true));
-    if (new URLSearchParams(window.location.search).get('cookies') === '1') showCookieBanner(true);
+    // Keep withdrawal/change of consent as easy as the initial choice.
+    $('#cookieSettingsLink').addEventListener('click', showCookieBanner);
+    if (new URLSearchParams(window.location.search).get('cookies') === '1') showCookieBanner();
   }
 
   function init() {
