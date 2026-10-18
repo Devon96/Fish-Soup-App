@@ -7,10 +7,6 @@
   const TIMED_MINUTES = 15;
   const COOKING_STORAGE_KEY = 'bajai-halaszle-cooking-v1';
   const UI_STORAGE_KEY = 'bajai-halaszle-ui-v1';
-  const CONSENT_STORAGE_KEY = 'bajai-halaszle-cookie-consent-v1';
-  const CONSENT_VERSION = 1;
-  const GOOGLE_ANALYTICS_ID = 'G-JEFFP3CYK5';
-  let analyticsLoaded = false;
 
   const translations = {
     hu: {
@@ -30,11 +26,6 @@
       processIntro: 'Haladj sorban. A forrást külön jelezheted, az időzítők pedig számolják a hátralévő időt.',
       stepsLabel: 'lépés', progressReady: 'Készen állsz a kezdésre?', notificationFootnote: 'Az értesítésekhez engedélyezd a böngészőértesítéseket, és hagyd nyitva ezt az oldalt. A pontos riasztás függ a böngészőtől és az eszköz beállításaitól.',
       footerText: 'Hagyományos arányok alapján · A sót kóstolás után állítsd be.', footerMade: 'főzz jó étvággyal',
-      cookieSettingsLink: 'Süti-hozzájárulás módosítása',
-      cookieKicker: 'ADATVÉDELEM', cookieTitle: 'Engedélyezed a látogatottsági statisztikák mérését?',
-      cookieDescription: 'A Google Analytics 4 segítségével a látogatottságot mérjük. Az analitika csak akkor töltődik be, ha elfogadod. A választásodat később a láblécben módosíthatod.',
-      cookieReject: 'Elutasítom', cookieAccept: 'Elfogadom',
-      cookieRejected: 'Az analitika nem töltődik be.', cookieAccepted: 'Az analitika engedélyezve van.',
       fish: 'Hal, vegyesen', water: 'Víz összesen', onions: 'Nagy vöröshagyma', cubes: 'Halászlé-kocka', paprika: 'Édes őrölt pirospaprika', pasta: 'Halászlé-/gyufatészta', salt: 'Só',
       toTaste: 'ízlés szerint', servingsEstimate: 'Kb. {n} adag', fishEstimate: 'Becsült adag: {n} főre',
       stepStatusCurrent: 'MOST EZ JÖN', stepStatusDone: 'KÉSZ', stepStatusNext: 'KÖVETKEZIK', stepStatusWaiting: 'VÁRAKOZÁS',
@@ -107,11 +98,6 @@
       processIntro: 'Follow the steps in order. Confirm when the soup starts boiling; the timers will track the remaining time.',
       stepsLabel: 'step', progressReady: 'Ready to start?', notificationFootnote: 'Allow browser notifications and keep this page open to receive alerts. Exact delivery depends on your browser and device settings.',
       footerText: 'Scaled from the traditional ratios · Adjust salt after tasting.', footerMade: 'cook and enjoy',
-      cookieSettingsLink: 'Change cookie choice',
-      cookieKicker: 'PRIVACY', cookieTitle: 'Allow visitor statistics?',
-      cookieDescription: 'We use Google Analytics 4 to measure site visits. Analytics loads only if you accept. You can change your choice later using the link in the footer.',
-      cookieReject: 'Reject', cookieAccept: 'Accept',
-      cookieRejected: 'Analytics will not be loaded.', cookieAccepted: 'Analytics is enabled.',
       fish: 'Mixed fish', water: 'Water, total', onions: 'Large onion', cubes: 'Fish-soup stock cube', paprika: 'Sweet ground paprika', pasta: 'Soup / matchstick pasta', salt: 'Salt',
       toTaste: 'to taste', servingsEstimate: 'Approx. {n} servings', fishEstimate: 'Estimated yield: {n} people',
       stepStatusCurrent: 'UP NEXT', stepStatusDone: 'DONE', stepStatusNext: 'UPCOMING', stepStatusWaiting: 'WAITING',
@@ -403,10 +389,9 @@
         ? `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>`
         : String(i + 1).padStart(2, '0');
       const activeControl = i === state.currentStep ? `<div class="step-controls">${activeStepControl()}</div>` : '';
-      const visibleInstructions = status.done ? '' : instructionList(instructions);
       return `<article class="step-card ${status.className} ${state.finished && i === 4 ? 'is-finished' : ''}" id="step-${i + 1}" ${i === state.currentStep ? 'aria-current="step"' : ''}>
         <div class="step-main"><div class="step-number">${number}</div><div class="step-heading"><div class="step-title-row"><h3>${escapeHtml(t(keys.title))}</h3><span class="step-status">${escapeHtml(status.label)}</span></div><p class="step-subtitle">${escapeHtml(t(keys.subtitle))}</p></div></div>
-        <div class="step-body">${visibleInstructions}${activeControl}</div>
+        <div class="step-body">${instructionList(instructions)}${activeControl}</div>
       </article>`;
     }).join('');
     updateTimerDisplays();
@@ -674,89 +659,6 @@
     saveCookingState();
   }
 
-  function readCookieConsent() {
-    try {
-      const saved = JSON.parse(safeGet(CONSENT_STORAGE_KEY) || 'null');
-      if (saved && saved.version === CONSENT_VERSION && typeof saved.analytics === 'boolean') return saved;
-    } catch { /* Ignore invalid or unavailable storage. */ }
-    return null;
-  }
-
-  function saveCookieConsent(analytics) {
-    const consent = { version: CONSENT_VERSION, analytics: Boolean(analytics), savedAt: new Date().toISOString() };
-    safeSet(CONSENT_STORAGE_KEY, JSON.stringify(consent));
-    applyCookieConsent(consent.analytics);
-    hideCookieBanner();
-    showToast(t(consent.analytics ? 'cookieAccepted' : 'cookieRejected'));
-  }
-
-  function loadGoogleAnalytics() {
-    if (analyticsLoaded || !readCookieConsent()?.analytics) return;
-    window[`ga-disable-${GOOGLE_ANALYTICS_ID}`] = false;
-    window.dataLayer = window.dataLayer || [];
-    window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
-    window.gtag('js', new Date());
-    window.gtag('config', GOOGLE_ANALYTICS_ID, { anonymize_ip: true });
-    const script = document.createElement('script');
-    script.async = true;
-    script.src = `https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ANALYTICS_ID}`;
-    script.dataset.googleAnalytics = 'true';
-    document.head.appendChild(script);
-    analyticsLoaded = true;
-  }
-
-  function deleteAnalyticsCookies() {
-    const names = document.cookie.split(';').map(cookie => cookie.trim().split('=')[0]);
-    const analyticsNames = new Set(names.filter(name => /^(_ga|_gid|_gat|_gac|_gcl)/.test(name)));
-    analyticsNames.add('_ga');
-    analyticsNames.add('_gid');
-    analyticsNames.add('_gat');
-    analyticsNames.add(`_ga_${GOOGLE_ANALYTICS_ID.replace(/^G-/, '').replace(/-/g, '_')}`);
-    for (const name of analyticsNames) {
-      document.cookie = `${name}=; Max-Age=0; path=/; SameSite=Lax`;
-      document.cookie = `${name}=; Max-Age=0; path=/; domain=${location.hostname}; SameSite=Lax`;
-      const parts = location.hostname.split('.');
-      if (parts.length > 1 && !/^\d+$/.test(parts[parts.length - 1])) {
-        document.cookie = `${name}=; Max-Age=0; path=/; domain=.${parts.slice(-2).join('.')}; SameSite=Lax`;
-      }
-    }
-  }
-
-  function applyCookieConsent(analyticsAllowed) {
-    window[`ga-disable-${GOOGLE_ANALYTICS_ID}`] = !analyticsAllowed;
-    if (analyticsAllowed) {
-      loadGoogleAnalytics();
-    } else {
-      if (typeof window.gtag === 'function') {
-        window.gtag('consent', 'update', { analytics_storage: 'denied' });
-      }
-      deleteAnalyticsCookies();
-    }
-  }
-
-  function showCookieBanner() {
-    $('#cookieConsent').hidden = false;
-  }
-
-  function hideCookieBanner() {
-    $('#cookieConsent').hidden = true;
-  }
-
-  function initCookieConsent() {
-    const current = readCookieConsent();
-    if (current) {
-      hideCookieBanner();
-      applyCookieConsent(current.analytics);
-    } else {
-      showCookieBanner();
-    }
-    $('#cookieAcceptButton').addEventListener('click', () => saveCookieConsent(true));
-    $('#cookieRejectButton').addEventListener('click', () => saveCookieConsent(false));
-    // Keep withdrawal/change of consent as easy as the initial choice.
-    $('#cookieSettingsLink').addEventListener('click', showCookieBanner);
-    if (new URLSearchParams(window.location.search).get('cookies') === '1') showCookieBanner();
-  }
-
   function init() {
     loadSavedState();
     applyTheme();
@@ -783,7 +685,6 @@
     });
     updateNotificationButton();
     applyLanguage();
-    initCookieConsent();
     if (state.timerState === 'running') beginTicker();
     else if (state.timerState === 'done') renderSteps();
     window.addEventListener('beforeunload', saveCookingState);
