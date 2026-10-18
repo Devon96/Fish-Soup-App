@@ -16,7 +16,7 @@
     hu: {
       brandSub: 'konyhai segéd', eyebrow: 'KLASSZIKUS BAJAI RECEPT', heroTitle: 'Halászlé, lépésről lépésre.',
       heroDescription: 'Számold ki a hozzávalókat, indítsd el a főzést, és hagyd, hogy az időzítő végigvezessen a bogrács mellett.',
-      metaTime: '45 perc időzített főzés', metaBogracs: 'Bográcshoz és tűzhelyhez', artCaption: 'Lassan, türelmesen, forrásban.',
+      metaTime: '45 perc időzített főzés', metaBogracs: 'Bográcshoz', artCaption: 'Lassan, türelmesen, forrásban.',
       recipeCardKicker: 'ELŐKÉSZÍTÉS', ingredientsTitle: 'Hozzávalók',
       ingredientsIntro: 'A mennyiségek a megadott recept arányai alapján automatikusan változnak.',
       modeWeight: 'Hal súlya', modeServings: 'Adagok száma', weightLabel: 'Hal összesen', servingsLabel: 'Hány főre?', peopleUnit: 'fő',
@@ -93,7 +93,7 @@
     en: {
       brandSub: 'kitchen companion', eyebrow: 'CLASSIC BAJA RECIPE', heroTitle: 'Fisherman’s soup, step by step.',
       heroDescription: 'Scale the ingredients, start cooking, and let the timers guide you through every stage by the kettle.',
-      metaTime: '45 minutes of timed cooking', metaBogracs: 'For kettle or stovetop', artCaption: 'Slow, steady, gently boiling.',
+      metaTime: '45 minutes of timed cooking', metaBogracs: 'For cauldron', artCaption: 'Slow, steady, gently boiling.',
       recipeCardKicker: 'PREPARATION', ingredientsTitle: 'Ingredients',
       ingredientsIntro: 'Amounts are scaled automatically using the ratios in the recipe you provided.',
       modeWeight: 'Fish weight', modeServings: 'Servings', weightLabel: 'Total fish', servingsLabel: 'How many people?', peopleUnit: 'people',
