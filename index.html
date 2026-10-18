@@ -9,17 +9,6 @@
   <link rel="stylesheet" href="styles.css">
   <script src="app.js" defer></script>
 </head>
-  <!-- Google tag (gtag.js) -->
-  <!--
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-JEFFP3CYK5"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-JEFFP3CYK5');
-</script>
-  -->
 <body data-theme="light">
   <header class="topbar">
     <a class="brand" href="#top" aria-label="Bajai halászlé kezdőlap">
@@ -126,8 +115,46 @@
       </section>
     </section>
 
-    <footer class="page-footer"><span data-i18n="footerText">Hagyományos arányok alapján · A sót kóstolás után állítsd be.</span><span>BAJA, HUNGARY <span class="footer-dot">•</span> <span data-i18n="footerMade">főzz jó étvággyal</span></span></footer>
+    <footer class="page-footer">
+      <span class="footer-notes">
+        <span data-i18n="footerText">Hagyományos arányok alapján · A sót kóstolás után állítsd be.</span>
+        <span class="footer-privacy-links">
+          <a href="privacy-policy.html" data-i18n="privacyPolicyLink">Adatvédelmi és sütitájékoztató</a>
+          <button type="button" id="cookieSettingsLink" class="text-button" data-i18n="cookieSettingsLink">Süti beállítások</button>
+        </span>
+      </span>
+      <span>BAJA, HUNGARY <span class="footer-dot">•</span> <span data-i18n="footerMade">főzz jó étvággyal</span></span>
+    </footer>
   </main>
+  <section id="cookieConsent" class="cookie-consent" aria-labelledby="cookieConsentTitle" aria-describedby="cookieConsentDescription" hidden>
+    <div class="cookie-consent-card">
+      <div class="cookie-consent-copy">
+        <span class="cookie-consent-kicker" data-i18n="cookieKicker">ADATVÉDELEM</span>
+        <h2 id="cookieConsentTitle" data-i18n="cookieTitle">Te döntesz a statisztikai sütikről</h2>
+        <p id="cookieConsentDescription" data-i18n="cookieDescription">A Google Analytics 4 segítségével a látogatottságot mérjük, hogy fejleszthessük az oldalt. Az analitika csak akkor indul el, ha engedélyezed. A választásodat később bármikor módosíthatod.</p>
+        <a href="privacy-policy.html" data-i18n="cookiePrivacyLink">Adatvédelmi és sütitájékoztató</a>
+      </div>
+      <div class="cookie-consent-actions" aria-label="Cookie consent actions">
+        <button type="button" id="cookieRejectButton" class="cookie-button cookie-button-secondary" data-i18n="cookieReject">Elutasítom</button>
+        <button type="button" id="cookieCustomizeButton" class="cookie-button cookie-button-secondary" aria-expanded="false" aria-controls="cookieSettingsPanel" data-i18n="cookieCustomize">Beállítások</button>
+        <button type="button" id="cookieAcceptButton" class="cookie-button cookie-button-primary" data-i18n="cookieAccept">Analitika engedélyezése</button>
+      </div>
+      <div id="cookieSettingsPanel" class="cookie-settings-panel" hidden>
+        <div class="cookie-settings-heading">
+          <div><strong data-i18n="cookieSettingsTitle">Süti-beállítások</strong><p data-i18n="cookieNecessaryDescription">A szükséges helyi tárolás az oldal alapvető működéséhez mindig aktív.</p></div>
+          <span class="cookie-always-on" data-i18n="cookieAlwaysOn">Mindig aktív</span>
+        </div>
+        <label class="cookie-toggle-row" for="cookieAnalyticsToggle">
+          <span><strong data-i18n="cookieAnalyticsTitle">Statisztikai analitika</strong><small data-i18n="cookieAnalyticsDescription">Google Analytics 4: oldalmegtekintések és használati statisztikák mérése.</small></span>
+          <input type="checkbox" id="cookieAnalyticsToggle">
+        </label>
+        <div class="cookie-settings-actions">
+          <button type="button" id="cookieCancelButton" class="cookie-button cookie-button-secondary" data-i18n="cookieCancel">Mégse</button>
+          <button type="button" id="cookieSaveButton" class="cookie-button cookie-button-primary" data-i18n="cookieSave">Beállítások mentése</button>
+        </div>
+      </div>
+    </div>
+  </section>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 </body>
 </html>
