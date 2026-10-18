@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f4ee">
+  <meta name="description" content="Interaktív, kétnyelvű Bajai halászlé-recept kalkulátorral és főzési időzítőkkel.">
+  <title>Bajai halászlé · Kitchen companion</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body data-theme="light">
+  <header class="topbar">
+    <a class="brand" href="#top" aria-label="Bajai halászlé kezdőlap">
+      <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+      <span class="brand-copy"><strong>BAJAI HALÁSZLÉ</strong><small data-i18n="brandSub">konyhai segéd</small></span>
+    </a>
+    <div class="top-actions">
+      <button class="icon-button" id="notificationButton" type="button" aria-label="Értesítések bekapcsolása" title="Értesítések">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>
+        <span class="button-label" data-i18n="notifications">Értesítések</span>
+        <span class="status-dot" id="notificationDot" aria-hidden="true"></span>
+      </button>
+      <button class="icon-button compact-button" id="themeButton" type="button" aria-label="Téma váltása" title="Téma váltása">
+        <svg id="themeIcon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg>
+      </button>
+      <button class="language-button" id="languageButton" type="button" aria-label="Switch to English">EN</button>
+    </div>
+  </header>
+
+  <main id="top" class="page-shell">
+    <section class="hero" aria-labelledby="pageTitle">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="eyebrow-line"></span><span data-i18n="eyebrow">KLASSZIKUS BAJAI RECEPT</span></div>
+        <h1 id="pageTitle" data-i18n="heroTitle">Halászlé, lépésről lépésre.</h1>
+        <p class="hero-description" data-i18n="heroDescription">Számold ki a hozzávalókat, indítsd el a főzést, és hagyd, hogy az időzítő végigvezessen a bogrács mellett.</p>
+        <div class="hero-meta">
+          <span class="meta-chip"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span data-i18n="metaTime">45 perc időzített főzés</span></span>
+          <span class="meta-chip"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19h16M6 19V8l6-4 6 4v11M9 11h.01M15 11h.01M10 15h4"/></svg><span data-i18n="metaBogracs">Bográcshoz és tűzhelyhez</span></span>
+        </div>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="art-sun"></div>
+        <div class="art-pot-handle"></div>
+        <div class="art-pot"><div class="art-soup"><span></span><i></i><b></b></div><div class="art-pot-rim"></div><div class="art-pot-leg leg-left"></div><div class="art-pot-leg leg-right"></div></div>
+        <div class="art-steam steam-one"></div><div class="art-steam steam-two"></div><div class="art-steam steam-three"></div>
+        <span class="art-caption" data-i18n="artCaption">Lassan, türelmesen, forrásban.</span>
+      </div>
+    </section>
+
+    <section class="workspace" aria-label="Recept és főzési folyamat">
+      <aside class="sidebar">
+        <section class="panel ingredient-panel" aria-labelledby="ingredientsTitle">
+          <div class="panel-heading">
+            <div>
+              <span class="section-kicker" data-i18n="recipeCardKicker">ELŐKÉSZÍTÉS</span>
+              <h2 id="ingredientsTitle" data-i18n="ingredientsTitle">Hozzávalók</h2>
+            </div>
+            <span class="heading-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h16M6 5v14h12V5M9 9h6m-6 4h6m-6 3h3"/></svg></span>
+          </div>
+          <p class="panel-intro" data-i18n="ingredientsIntro">A mennyiségek a megadott recept arányai alapján automatikusan változnak.</p>
+
+          <div class="mode-switch" role="group" aria-label="Mennyiség megadása">
+            <button type="button" class="mode-button is-selected" data-mode="weight" aria-pressed="true" data-i18n="modeWeight">Hal súlya</button>
+            <button type="button" class="mode-button" data-mode="servings" aria-pressed="false" data-i18n="modeServings">Adagok száma</button>
+          </div>
+
+          <div class="quantity-input-wrap" id="weightInputWrap">
+            <label for="fishWeight" data-i18n="weightLabel">Hal összesen</label>
+            <div class="number-input"><input id="fishWeight" type="number" min="0.1" max="100" step="0.1" value="1.0" inputmode="decimal"><span>kg</span></div>
+          </div>
+          <div class="quantity-input-wrap is-hidden" id="servingsInputWrap">
+            <label for="servingsInput" data-i18n="servingsLabel">Hány főre?</label>
+            <div class="number-input"><input id="servingsInput" type="number" min="1" max="100" step="1" value="3" inputmode="numeric"><span data-i18n="peopleUnit">fő</span></div>
+          </div>
+          <div class="yield-summary" aria-live="polite">
+            <span class="yield-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 12s3.2-5 9-5 9 5 9 5-3.2 5-9 5-9-5-9-5Z"/><circle cx="12" cy="12" r="2"/><path d="m18 7 2-2"/></svg></span>
+            <span><strong id="yieldValue">Kb. 2,5 adag</strong><small data-i18n="yieldCaption">400 g hal / fő becsléssel</small></span>
+          </div>
+
+          <div class="ingredient-list-heading"><span data-i18n="ingredientNameHeading">Hozzávaló</span><span data-i18n="amountHeading">Mennyiség</span></div>
+          <ul class="ingredient-list" id="ingredientList" aria-live="polite"></ul>
+          <p class="assumption-note"><span class="note-symbol" aria-hidden="true">i</span><span data-i18n="assumptionNote">A tészta becsült mennyisége 80 g/fő, 400 g hal/fő aránnyal. A hagyma és a kocka tört mennyisége méret, illetve ízlés szerint kerekíthető.</span></p>
+        </section>
+
+        <section class="panel kitchen-notes" aria-labelledby="notesTitle">
+          <div class="panel-heading small-heading">
+            <div><span class="section-kicker" data-i18n="cookNotesKicker">JÓ TUDNI</span><h2 id="notesTitle" data-i18n="notesTitle">Pár apró tipp</h2></div>
+            <span class="heading-icon secondary" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 18v-6m0-4h.01M9 21h6M5.5 15.5a8 8 0 1 1 13 0c-1.2 1.1-1.7 2-1.7 2.5H7.2c0-.5-.5-1.4-1.7-2.5Z"/></svg></span>
+          </div>
+          <ul class="tips-list">
+            <li data-i18n="tipOne">A halszeleteket előre sózd be.</li>
+            <li data-i18n="tipTwo">A halászlé a főzési szakaszokban végig forrjon, de ne kavargasd erősen; inkább óvatosan rázd meg a bográcsot.</li>
+            <li data-i18n="tipThree">A halászlé tésztáját külön, a csomagolás szerint főzd meg.</li>
+          </ul>
+        </section>
+      </aside>
+
+      <section class="cooking-section" aria-labelledby="processTitle">
+        <div class="process-header panel">
+          <div class="process-heading-row">
+            <div>
+              <span class="section-kicker" data-i18n="liveGuideKicker">FŐZÉSI SEGÉD</span>
+              <h2 id="processTitle" data-i18n="processTitle">A főzés menete</h2>
+              <p data-i18n="processIntro">Haladj sorban. A forrást külön jelezheted, az időzítők pedig számolják a hátralévő időt.</p>
+            </div>
+            <div class="progress-count"><strong id="stepCounter">1 / 5</strong><span data-i18n="stepsLabel">lépés</span></div>
+          </div>
+          <div class="progress-track" role="progressbar" aria-label="Főzési folyamat előrehaladása" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progressTrack"><span id="progressFill"></span></div>
+          <div class="progress-caption"><span id="progressMessage" data-i18n="progressReady">Készen állsz a kezdésre?</span><span id="progressPercent">0%</span></div>
+        </div>
+
+        <div class="step-list" id="stepList" aria-live="polite" aria-relevant="additions text"></div>
+        <div class="notification-footnote"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v9m0 4h.01M5.6 20h12.8a2 2 0 0 0 1.7-3L13.7 4a2 2 0 0 0-3.4 0L3.9 17a2 2 0 0 0 1.7 3Z"/></svg><span data-i18n="notificationFootnote">Az értesítésekhez engedélyezd a böngészőértesítéseket, és hagyd nyitva ezt az oldalt. A pontos riasztás függ a böngészőtől és az eszköz beállításaitól.</span></div>
+      </section>
+    </section>
+
+    <footer class="page-footer"><span data-i18n="footerText">Hagyományos arányok alapján · A sót kóstolás után állítsd be.</span><span>BAJA, HUNGARY <span class="footer-dot">•</span> <span data-i18n="footerMade">főzz jó étvággyal</span></span></footer>
+  </main>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
