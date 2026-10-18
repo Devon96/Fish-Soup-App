@@ -35,7 +35,7 @@
       cookieDescription: 'Az oldal a működéshez szükséges beállításokat a böngésződben tárolja. A Google Analytics 4 látogatottsági mérése csak akkor indul el, ha elfogadod. A választásodat később a Süti-beállítások gombbal módosíthatod.',
       cookieReject: 'Elutasítom', cookieAccept: 'Elfogadom',
       cookieRejected: 'Az analitikát elutasítottad; a mérőkód nem fut tovább.', cookieAccepted: 'Az analitikát engedélyezted.',
-      fish: 'Hal, vegyesen', water: 'Víz összesen', onions: 'Nagy vöröshagyma', cubes: 'Halászlé-kocka', paprika: 'Édes őrölt pirospaprika', pasta: 'Halászlé-/gyufatészta', salt: 'Só',
+      fish: 'Hal, vegyesen', water: 'Víz összesen', onions: 'Nagy vöröshagyma', cubes: 'Halászlé-kocka', paprika: 'Édes őrölt pirospaprika', pasta: 'gyufatészta', salt: 'Só',
       toTaste: 'ízlés szerint', servingsEstimate: 'Kb. {n} adag', fishEstimate: 'Becsült adag: {n} főre',
       stepStatusCurrent: 'MOST EZ JÖN', stepStatusDone: 'KÉSZ', stepStatusNext: 'KÖVETKEZIK', stepStatusWaiting: 'VÁRAKOZÁS',
       step1Title: 'Főzd a hagymát', step1Subtitle: '15 perc · kevés vízben',
@@ -65,7 +65,7 @@
       step5Instructions: [
         'A második 15 perces főzés végén kóstold meg, és csak ezután sózd utána, ha szükséges.',
         'Óvatosan emeld ki a haldarabokat. Ha tisztább levet szeretnél, szűrd le a hagymát.',
-        'A halászlé-/gyufatésztát külön főzd meg a csomagolás szerint, majd a levet, a halat és a tésztát tálald.'
+        'A gyufatésztát külön főzd meg a csomagolás szerint, majd a levet, a halat és a tésztát tálald.'
       ],
       startCooking: 'Indítsd a főzést', pause: 'Szünet', resume: 'Folytatás', nextStep: 'Lépés kész · tovább',
       boilingButton: 'Forrni kezdett', addLateIngredients: 'Hozzávalók hozzáadva · indul a 15 perc', finishButton: 'Kész, tálalhatom', restartButton: 'Új főzés indítása',
