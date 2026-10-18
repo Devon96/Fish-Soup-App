@@ -725,7 +725,7 @@
 
   function showCookieConsent() {
     const dialog = $('#cookieConsent');
-    if (!dialog.open) dialog.showModal();
+    if (!dialog.open) dialog.show();
   }
 
   function saveCookieConsent(analytics) {
